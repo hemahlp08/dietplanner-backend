@@ -1,10 +1,9 @@
 package com.nutrition.dietplanner.controller;
 
+import com.nutrition.dietplanner.entity.User;
+import com.nutrition.dietplanner.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import com.nutrition.dietplanner.entity.User;
-import com.nutrition.dietplanner.repository.UserRepository;
 
 @RestController
 @RequestMapping("/api/users")
@@ -12,32 +11,15 @@ import com.nutrition.dietplanner.repository.UserRepository;
 public class UserController {
 
     @Autowired
-    private UserRepository userRepository;
+    private UserService userService;
 
-    // ✅ REGISTER
     @PostMapping("/register")
-    public String register(@RequestBody User user) {
-
-        User existing = userRepository.findByUsername(user.getUsername());
-
-        if (existing != null) {
-            return "User already exists";
-        }
-
-        userRepository.save(user);
-        return "Registered successfully";
+    public Object  register(@RequestBody User user) {
+        return userService.register(user);
     }
 
-    // ✅ LOGIN (IMPORTANT FIX)
     @PostMapping("/login")
     public Object login(@RequestBody User user) {
-
-        User existingUser = userRepository.findByUsername(user.getUsername());
-
-        if (existingUser != null && existingUser.getPassword().equals(user.getPassword())) {
-            return existingUser; // 🔥 MUST RETURN USER OBJECT
-        }
-
-        return "Invalid credentials";
+        return userService.login(user);
     }
 }
